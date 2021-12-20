@@ -7,63 +7,127 @@ function getComputerChoice() {
     rockPaperScissorArray = ['Rock', 'Paper', 'Scissors'];
     randomNumber = Math.floor(Math.random()*rockPaperScissorArray.length);
     return rockPaperScissorArray[randomNumber]; 
-}
-
+};
 
 //Function checks players choice and computers choice and decides winner.
 function playRound(playerSelection, computerPlay) {
-    return (playerSelection === 'Rock' && computerPlay === 'Rock') ? 'Tie! Play again!'
-        : (playerSelection === 'Rock' && computerPlay === 'Paper') ? 'You lose! Try again!'
-        : (playerSelection === 'Rock' && computerPlay === 'Scissors') ? 'Congratulations! You won!'
-        : (playerSelection === 'Paper' && computerPlay === 'Paper') ? 'Tie! Play again!'
-        : (playerSelection === 'Paper' && computerPlay === 'Scissors') ? 'You lose! Try again!'
-        : (playerSelection === 'Paper' && computerPlay === 'Rock') ? 'Congratulations! You won!'
-        : (playerSelection === 'Scissors' && computerPlay === 'Scissors') ? 'Tie! Play again!'
-        : (playerSelection === 'Scissors' && computerPlay === 'Rock') ? 'You lose! Try again!'
-        : (playerSelection === 'Scissors' && computerPlay === 'Paper') ? 'Congratulations! You won!'
+    return (playerSelection === 'Rock' && computerPlay === 'Rock') ? 'rock'
+        : (playerSelection === 'Rock' && computerPlay === 'Paper') ? 'paper'
+        : (playerSelection === 'Rock' && computerPlay === 'Scissors') ? 'scissors'
+        : (playerSelection === 'Paper' && computerPlay === 'Paper') ? 'paper'
+        : (playerSelection === 'Paper' && computerPlay === 'Scissors') ? 'scissors'
+        : (playerSelection === 'Paper' && computerPlay === 'Rock') ? 'rock'
+        : (playerSelection === 'Scissors' && computerPlay === 'Scissors') ? 'scissors'
+        : (playerSelection === 'Scissors' && computerPlay === 'Rock') ? 'rock'
+        : (playerSelection === 'Scissors' && computerPlay === 'Paper') ? 'paper'
         : 'You didn\'t choose rock, paper, or scissors'
 
 };
 
-//Function plays 5 rounds, tracks score, declares winner after 5 rounds.
-function game() {
-    playerScore = 0;
-    computerScore = 0;
-    counter = 0
-    while (counter < 5) {
-        let askPlayer = (prompt('Choose Rock, Paper, or Scissors')).toLowerCase();
-        let playerSelection = askPlayer.charAt(0).toUpperCase() + askPlayer.slice(1);
-        let result = playRound(playerSelection, getComputerChoice());
-        if (result === 'Congratulations! You won!') {
-            playerScore += 1
-            counter += 1
-            console.log('That\'s one point for you!')
-        } else if (result === 'You lose! Try again!') {
-            computerScore += 1
-            counter += 1
-            console.log('That\'s one for the computer!')
-        } else if (result === 'You didn\'t choose rock, paper, or scissors') {
-            console.log('Please choose rock, paper, or scissors.')
-        } else {
-            counter += 1
-            console.log('That round was a tie!')
-        };
+playerScore = 0;
+computerScore = 0;
+
+//Execute after every round to check if either player reached score limit
+//if either player reaches 5 points, winner is announced and score resets.
+function checkIfWinner() {
+    if (playerScore === 5) {
+        alert('You win the game!');
+        playerScore = 0;
+        computerScore = 0;
+        playerResult.textContent = 'Player score: ' + playerScore;
+        computerResult.textContent = 'Computer score: ' + computerScore;
     };
-
-
-    console.log('Player score: ' + playerScore);
-    console.log('Computer score: ' + computerScore);
-
-
-    return (playerScore > computerScore) ? 'Congratulations! You won the game!'
-        : (playerScore < computerScore) ? 'I\'m sorry, you lose.'
-        : 'You tied with the computer! How lame!';
- 
-
+    if (computerScore === 5) {
+        alert('Sorry! You lost the game!');
+        playerScore = 0;
+        computerScore = 0;
+        playerResult.textContent = 'Player score: ' + playerScore;
+        computerResult.textContent = 'Computer score: ' + computerScore;
     };
+};
 
-console.log(game());
+//Announces round winner and adds score to the UI
+function roundScoreRock () {
+    result = playRound('Rock', getComputerChoice());
+    if (result === 'scissors') {
+        playerScore += 1;
+        playerResult.textContent = 'Player score: ' + playerScore;
+        alert(`Computer threw ${result}! You won that round!`);
+    } else if (result === 'paper') {
+        computerScore += 1;
+        computerResult.textContent = 'Computer score: ' + computerScore;
+        alert(`Computer thew ${result}! You lost that round!`);
+    } else {
+        alert(`Computer thew ${result}! That round was a tie!`);
+    };
+    checkIfWinner();
+};
 
+function roundScorePaper () {
+    result = playRound('Paper', getComputerChoice());
+    if (result === 'rock') {
+        playerScore += 1;
+        playerResult.textContent = 'Player score: ' + playerScore;
+        alert(`Computer threw ${result}! You won that round!`);
+    } else if (result === 'scissors') {
+        computerScore += 1;
+        computerResult.textContent = 'Computer score: ' + computerScore;
+        alert(`Computer thew ${result}! You lost that round!`);
+    } else {
+        alert(`Computer thew ${result}! That round was a tie!`);
+    };
+    checkIfWinner();
+};
+
+function roundScoreScissors () {
+    result = playRound('Scissors', getComputerChoice());
+    if (result === 'paper') {
+        playerScore += 1;
+        playerResult.textContent = 'Player score: ' + playerScore;
+        alert(`Computer threw ${result}! You won that round!`);
+    } else if (result === 'rock') {
+        computerScore += 1;
+        computerResult.textContent = 'Computer score: ' + computerScore;
+        alert(`Computer thew ${result}! You lost that round!`);
+    } else {
+        alert(`Computer thew ${result}! That round was a tie!`);
+    };
+    checkIfWinner();
+};
+
+
+//Add rock, paper, scissor buttons to DOM. add event listeners. attached functions to activate on event
+
+const rock = document.querySelector('#rockButton');
+rock.addEventListener('click', function (){
+    roundScoreRock();
+ });
+
+const paper = document.querySelector('#paperButton');
+paper.addEventListener('click', function (){
+    roundScorePaper();
+});
+
+const scissors = document.querySelector('#scissorsButton');
+scissors.addEventListener('click', function (){
+    roundScoreScissors();
+});
+
+
+
+//add score box to DOM, add <p> that will keep track of player/comp score
+
+const scoreBox = document.querySelector('#scoreBox');
+
+const playerResult = document.createElement('p');
+scoreBox.appendChild(playerResult);
+playerResult.classList.add('playerResult');
+playerResult.textContent = 'Player score: ' + playerScore;
+
+const computerResult = document.createElement('p');
+scoreBox.appendChild(computerResult);
+computerResult.classList.add('computerResult');
+computerResult.textContent = 'Computer Score: ' + computerScore;
 
 
 
